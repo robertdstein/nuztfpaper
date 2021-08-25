@@ -14,7 +14,7 @@ big_fontsize = 10.0
 
 golden_ratio = 1.618
 
-base_width = 6.0
+base_width = 4.0
 base_height = base_width/golden_ratio
 
 margin_width = 0.5 * base_width
