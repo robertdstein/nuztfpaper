@@ -30,6 +30,8 @@ setuptools.setup(
         "astropy",
         "jupyter",
         "seaborn",
-        "nuztf"
+        "nuztf",
+        "flarestack==2.2.6",
+        "openpyxl"
     ],
 )
