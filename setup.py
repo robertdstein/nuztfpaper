@@ -30,6 +30,7 @@ setuptools.setup(
         "nuztf",
         "flarestack==2.2.6",
         "openpyxl",
-        "nuztf"
+        "numpy",
+        "pandas"
     ],
 )

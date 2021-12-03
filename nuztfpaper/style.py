@@ -1,11 +1,19 @@
+import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 sns.set_style("white")
 plt.rc('text', usetex=True)
 plt.rc('text.latex', preamble=r'\usepackage{romanbar}')
 plt.rcParams["font.family"] = "sans-serif"
 
 output_folder = "/Users/robertstein/Work/papers/ztf_nu_paper/figures/"
+plot_dir = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+    "plots/"
+)
+
+print(plot_dir)
 
 dpi = 300
 
