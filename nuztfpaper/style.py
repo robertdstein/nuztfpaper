@@ -13,7 +13,10 @@ plot_dir = os.path.join(
     "plots/"
 )
 
-print(plot_dir)
+data_dir = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+    "data/"
+)
 
 dpi = 300
 
