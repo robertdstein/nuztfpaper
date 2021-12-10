@@ -13,7 +13,7 @@ for index, row in obs.iterrows():
     name = row["Event"]
 
     new = pd.read_excel(base_file, sheet_name=name, skiprows=range(6), header=0)
-    if len(new) > 2:
+    if len(new) > 0:
 
         new["neutrino"] = name
 
@@ -33,15 +33,15 @@ for index, row in obs.iterrows():
 
             maxr.append(r)
 
-            if crow['Classification'] in ['AGN\n', 'AGN?', 'AGN']:
-                base_class.append("AGN")
+            if crow['Classification'] in ['AGN\n', 'AGN?', 'AGN', "AGN Flare"]:
+                base_class.append("AGN Flare")
                 sub_class.append("AGN Flare")
 
-            elif crow['Classification'] in ['AGN Variability', 'AGN Variability?']:
+            elif crow['Classification'] in ['AGN Variability', 'AGN Variability?', ]:
                 base_class.append("AGN")
                 sub_class.append("AGN Variability")
 
-            elif crow['Classification'] in ['AGN Variability (FP)']:
+            elif crow['Classification'] in ['AGN Variability (FP)', 'AGN Variability (FP)\n']:
                 base_class.append("AGN")
                 sub_class.append("AGN Variability")
 
@@ -53,9 +53,10 @@ for index, row in obs.iterrows():
                 base_class.append("Unclassified")
                 sub_class.append("Unclassified")
 
-            elif crow['Classification'] in ["artifact?", "Artifact\n"]:
-                base_class.append("Artifact")
-                sub_class.append("Artifact")
+            # MNRAS: British English!
+            elif crow['Classification'] in ["artifact?", "Artifact\n", "Artifact"]:
+                base_class.append("Artefact")
+                sub_class.append("Artefact")
 
             elif "Ia" in crow['Classification']:
                 base_class.append("Transient")
@@ -81,3 +82,5 @@ candidates["max_brightness"] = maxb
 candidates["max_range"] = maxr
 candidates["base_class"] = base_class
 candidates["sub_class"] = sub_class
+
+candidates["base_class"][candidates["base_class"] == "AGN"] = "AGN Variability"

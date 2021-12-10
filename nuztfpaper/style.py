@@ -1,6 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+from astropy.table import Table
+import pandas as pd
+import numpy as np
 
 sns.set_style("white")
 plt.rc('text', usetex=True)
@@ -36,4 +39,3 @@ full_height_landscape = full_width/golden_ratio
 full_height_a4 = 11.75/8.25 * full_width
 
 cmap = "rocket"
-
