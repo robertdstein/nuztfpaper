@@ -55,7 +55,7 @@ def plot_alerts(
         logger.debug(f"Loading from {cache_path}")
         df = pd.read_csv(cache_path)
         logger.debug(f"Loading from {ul_cache_path}")
-        ul = pd.read_csv(cache_path)
+        ul = pd.read_csv(ul_cache_path)
 
     else:
 
