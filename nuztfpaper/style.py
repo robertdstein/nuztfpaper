@@ -1,9 +1,10 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-from astropy.table import Table
-import pandas as pd
-import numpy as np
+from astropy.cosmology import FlatLambdaCDM
+
+cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+
 
 sns.set_style("white")
 plt.rc('text', usetex=True)
