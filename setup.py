@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="nuztfpaper",
-    version="0.0.1",
+    version="0.1.0",
     author="Robert Stein",
     author_email="rdstein@caltech.edu",
     description="Code for analysis used in ZTF Neutrino Program paper",
@@ -19,18 +19,18 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.10",
     ],
-    python_requires='>=3.8',
+    python_requires=">=3.10",
     install_requires=[
         "matplotlib",
         "astropy",
         "jupyter",
         "seaborn",
         "nuztf>=2.4.1",
-        "flarestack==2.2.6",
+        "flarestack>=2.2.6",
         "openpyxl",
         "numpy",
-        "pandas"
+        "pandas",
     ],
 )

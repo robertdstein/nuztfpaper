@@ -1,20 +1,24 @@
-import matplotlib.pyplot as plt
-from astropy.table import Table
-from astropy import units as u
-import pandas as pd
-import numpy as np
 import logging
 import os
-from ztfquery.io import LOCALSOURCE
-from astropy.time import Time
-from astropy import constants as const
-from nuztf.ampel_api import ampel_api_name
-from nuztf.plot import alert_to_pandas
-from nuztfpaper.style import plot_dir, base_width, base_height, dpi, big_fontsize, cosmo
-from nuztf.parse_nu_gcn import find_gcn_no, parse_gcn_circular
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from astropy import constants as const
+from astropy import units as u
+from astropy.table import Table
+from astropy.time import Time
+from nuztf.ampel_api import ampel_api_name
+from nuztf.parse_nu_gcn import find_gcn_no, parse_gcn_circular
+from nuztf.plot import alert_to_pandas
+from ztfquery.io import LOCALSOURCE
+
+from nuztfpaper.style import (base_height, base_width, big_fontsize, cosmo,
+                              dpi, plot_dir)
 
 logger = logging.getLogger(__name__)
+
+ALERT_MOD = 1.2
 
 
 def plot_alerts(
@@ -28,7 +32,7 @@ def plot_alerts(
     from_cache: bool = False,
     cache_dir: str = os.path.join(LOCALSOURCE, "cache/"),
     expanded_labels: bool = True,
-    ylim: tuple = None
+    ylim: tuple = None,
 ):
     plot_title = source_name
 
@@ -64,9 +68,11 @@ def plot_alerts(
 
         logger.debug(f"Saving to {cache_path}")
         df.to_csv(cache_path)
+        df = pd.read_csv(cache_path)
 
         logger.debug(f"Saving to {ul_cache_path}")
         ul.to_csv(ul_cache_path)
+        ul = pd.read_csv(ul_cache_path)
 
     data = Table.from_pandas(df)
     limdata = Table.from_pandas(ul)
@@ -75,7 +81,7 @@ def plot_alerts(
 
     # Start Figure
 
-    plt.figure(figsize=(base_width*1.15, base_height), dpi=dpi)
+    plt.figure(figsize=(base_width * 1.15, base_height), dpi=dpi)
 
     if expanded_labels:
 
@@ -106,11 +112,7 @@ def plot_alerts(
 
     cmap = {"zg": "g", "zr": "r", "zi": "orange"}
 
-    fid_map = {
-        "zg": 1,
-        "zr": 2,
-        "zi": 3
-    }
+    fid_map = {"zg": 1, "zr": 2, "zi": 3}
 
     wl = {
         "zg": 472.27,
@@ -126,7 +128,7 @@ def plot_alerts(
         mask = data["fid"] == fid_map[fc]
         limmask = limdata["fid"] == fid_map[fc]
 
-        mags = data["magpsf"][mask] * u.ABmag
+        mags = data["magpsf"][mask].data * u.ABmag
 
         magerrs = (data["sigmapsf"][mask] + data["magpsf"][mask]) * u.ABmag
 
@@ -152,7 +154,7 @@ def plot_alerts(
                 markersize=markersize,
                 c=cmap[fc],
                 marker="v",
-                alpha=0.3
+                alpha=0.3,
             )
 
             if source_redshift is not None:
@@ -199,7 +201,7 @@ def plot_alerts(
                 markersize=markersize,
                 c=cmap[fc],
                 marker="v",
-                alpha=0.3
+                alpha=0.3,
             )
 
             if source_redshift is not None:
@@ -221,12 +223,14 @@ def plot_alerts(
         ax.set_ylim(ylim)
 
     if plot_mag:
-        ax.set_ylabel(r"Apparent magnitude [AB]", fontsize=big_fontsize)
+        ax.set_ylabel(r"Apparent magnitude [AB]", fontsize=big_fontsize * ALERT_MOD)
 
         ax.invert_yaxis()
 
         if source_redshift is not None:
-            ax1b.set_ylabel(fr"Absolute magnitude [AB]", fontsize=big_fontsize)
+            ax1b.set_ylabel(
+                rf"Absolute magnitude [AB]", fontsize=big_fontsize * ALERT_MOD
+            )
 
             y_min, y_max = ax.get_ylim()
 
@@ -236,13 +240,16 @@ def plot_alerts(
 
     else:
         ax.set_ylabel(
-            r"$\nu$F$_{\nu}$ [erg cm$^{-2}$ s$^{-1}$]", fontsize=big_fontsize
+            r"$\nu$F$_{\nu}$ [erg cm$^{-2}$ s$^{-1}$]",
+            fontsize=big_fontsize * ALERT_MOD,
         )
 
         ax.set_yscale("log")
 
         if source_redshift is not None:
-            ax1b.set_ylabel(r"$\nu$L$_{\nu}$ [erg s$^{-1}$]", fontsize=big_fontsize)
+            ax1b.set_ylabel(
+                r"$\nu$L$_{\nu}$ [erg s$^{-1}$]", fontsize=big_fontsize * ALERT_MOD
+            )
             ax1b.set_yscale("log")
 
             y_min, y_max = ax.get_ylim()
@@ -251,7 +258,7 @@ def plot_alerts(
                 y_min * conversion_factor.value, y_max * conversion_factor.value
             )
 
-    ax.set_xlabel("Date (MJD)", fontsize=big_fontsize)
+    ax.set_xlabel("Date (MJD)", fontsize=big_fontsize * ALERT_MOD)
 
     # Add neutrino
 
@@ -300,22 +307,22 @@ def plot_alerts(
 
         ax.set_title(f'ZTF Lightcurve of {plot_title.replace("J", " J")}', y=1.4)
 
-        ax2.tick_params(axis="both", which="major", labelsize=big_fontsize)
+        ax2.tick_params(axis="both", which="major", labelsize=big_fontsize * ALERT_MOD)
 
-    ax.tick_params(axis="both", which="major", labelsize=big_fontsize)
+    ax.tick_params(axis="both", which="major", labelsize=big_fontsize * ALERT_MOD)
 
     # plt.setp(ax2.get_yticklabels(), visible=True)
     # ax.yaxis.set_tick_params(visible=True)
 
     if source_redshift is not None:
-        ax1b.tick_params(axis="both", which="major", labelsize=big_fontsize)
+        ax1b.tick_params(axis="both", which="major", labelsize=big_fontsize * ALERT_MOD)
 
     ax.legend(
         loc="upper center",
-        bbox_to_anchor=(0.5, 1.22 + 0.2*float(expanded_labels)),
+        bbox_to_anchor=(0.5, 1.22 + 0.2 * float(expanded_labels)),
         ncol=3 + len(nu_name),
         fancybox=True,
-        fontsize=big_fontsize,
+        fontsize=big_fontsize * ALERT_MOD,
     )
 
     filename = f"{source_name.replace(' ', '')}_lightcurve{['_flux', ''][plot_mag]}.png"

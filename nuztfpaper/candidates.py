@@ -1,6 +1,7 @@
-import pandas as pd
 import numpy as np
-from nuztfpaper.alerts import obs, base_file
+import pandas as pd
+
+from nuztfpaper.alerts import base_file, obs
 
 candidates = None
 
@@ -24,59 +25,65 @@ for index, row in obs.iterrows():
 
         for _, crow in new.iterrows():
 
-            maxb.append(float(crow['max brightness'].split(" ")[0]))
+            maxb.append(float(crow["max brightness"].split(" ")[0]))
 
-            if isinstance(crow['max range'], str):
-                r = float(crow['max range'].split(" ")[0])
+            if isinstance(crow["max range"], str):
+                r = float(crow["max range"].split(" ")[0])
             else:
                 r = 0.0
 
             maxr.append(r)
 
-            if crow['Classification'] in ['AGN\n', 'AGN?', 'AGN', "AGN Flare"]:
+            if crow["Classification"] in ["AGN\n", "AGN?", "AGN", "AGN Flare"]:
                 base_class.append("AGN Flare")
                 sub_class.append("AGN Flare")
 
-            elif crow['Classification'] in ['AGN Variability', 'AGN Variability?', ]:
+            elif crow["Classification"] in [
+                "AGN Variability",
+                "AGN Variability?",
+            ]:
                 base_class.append("AGN")
                 sub_class.append("AGN Variability")
 
-            elif crow['Classification'] in ['AGN Variability (FP)', 'AGN Variability (FP)\n']:
+            elif crow["Classification"] in [
+                "AGN Variability (FP)",
+                "AGN Variability (FP)\n",
+            ]:
                 base_class.append("AGN")
                 sub_class.append("AGN Variability")
 
-            elif str(crow['Classification']) in ["CV", "Star?", "CV???", "Star"]:
+            elif str(crow["Classification"]) in ["CV", "Star?", "CV???", "Star"]:
                 base_class.append("Star")
                 sub_class.append("Star")
 
-            elif crow['Classification'] in ["???", np.nan, "?", "???\n\n"]:
+            elif crow["Classification"] in ["???", np.nan, "?", "???\n\n"]:
                 base_class.append("Unclassified")
                 sub_class.append("Unclassified")
 
             # MNRAS: British English!
-            elif crow['Classification'] in ["artifact?", "Artifact\n", "Artifact"]:
+            elif crow["Classification"] in ["artifact?", "Artifact\n", "Artifact"]:
                 base_class.append("Artefact")
                 sub_class.append("Artefact")
 
-            elif "Ia" in crow['Classification']:
+            elif "Ia" in crow["Classification"]:
                 base_class.append("Transient")
                 sub_class.append("SN Ia")
 
-            elif "SN" in crow['Classification']:
+            elif "SN" in crow["Classification"]:
                 base_class.append("Transient")
-                sub_class.append(crow['Classification'])
+                sub_class.append(crow["Classification"])
 
-            elif crow['Classification'] in ["II/IIb"]:
+            elif crow["Classification"] in ["II/IIb"]:
                 base_class.append("Transient")
                 sub_class.append("SN II/IIb")
 
-            elif crow['Classification'] in ["TDE", "Dwarf Nova"]:
+            elif crow["Classification"] in ["TDE", "Dwarf Nova"]:
                 base_class.append("Transient")
-                sub_class.append(crow['Classification'])
+                sub_class.append(crow["Classification"])
 
             else:
-                base_class.append(crow['Classification'])
-                sub_class.append(crow['Classification'])
+                base_class.append(crow["Classification"])
+                sub_class.append(crow["Classification"])
 
 candidates["max_brightness"] = maxb
 candidates["max_range"] = maxr
